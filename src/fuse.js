@@ -312,6 +312,7 @@
     var results = this.results
     var bestScore
     var nScore
+    var scoreLenMax = 0
 
     if (this.options.verbose) log('\n\nComputing score:\n')
 
@@ -319,6 +320,9 @@
       totalScore = 0
       output = results[i].output
       scoreLen = output.length
+
+      // compute maximum length of matched results
+      if (scoreLenMax <= scoreLen) scoreLenMax = scoreLen
 
       bestScore = 1
 
@@ -337,7 +341,8 @@
       }
 
       if (bestScore === 1) {
-        results[i].score = totalScore / scoreLen
+        // average of totalScore is calculated by taking into account if other results exist that have longer matches (i.e. more matched keys)
+        results[i].score = (totalScore + (scoreLenMax - scoreLen)) / scoreLenMax
       } else {
         results[i].score = bestScore
       }
